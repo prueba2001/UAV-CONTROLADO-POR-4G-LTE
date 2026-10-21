@@ -17,7 +17,12 @@ Software/
 │   └── lector_serial1.py          ← Python 3 + pyserial
 ├── visor3d/alapalap_3d.html       ← Modelo 3D (three.js r128)
 ├── Imagenes/                      ← Diagramas y láminas
-└── docs/SETUP.md                  ← Puesta en marcha rápida
+│   ├── diagramas/                 ← 10 diagramas + Gantt (PNG y SVG)
+│   └── estado_del_arte/           ← Figuras del estado del arte
+├── docs/SETUP.md                  ← Puesta en marcha rápida
+├── docs/DIAGRAMAS.md              ← Explicación de los 10 diagramas + Gantt
+├── docs/OBSERVACIONES_Y_MEJORAS.md ← Revisión del código y mejoras propuestas
+└── Estado_del_arte_UAV_4G_LTE.pdf ← Estado del arte (también en .docx)
 ```
 
 | Archivo | Corre en | Librerías | Función |
@@ -91,3 +96,33 @@ Página única con three.js: girar, zoom, vistas (3/4, arriba, abajo, frente, la
 ## 6. Puesta en marcha
 
 Ver [`docs/SETUP.md`](docs/SETUP.md).
+
+---
+
+## 7. Diagramas del código
+
+Los flujos de cada programa están dibujados a partir de estos mismos archivos. Detalle en [`docs/DIAGRAMAS.md`](docs/DIAGRAMAS.md).
+
+| Programa | Diagrama |
+| :--- | :--- |
+| `Joystick1.ino`, `lector_serial1.py`, `Transmisor1.py` | [06 · Flujo del código en tierra](Imagenes/diagramas/06_flujo_codigo_tierra.png) |
+| `tesis1.py` | [07 · Flujo de la Orange Pi](Imagenes/diagramas/07_flujo_tesis1_orangepi.png) |
+| `main1.py` | [08 · Flujo del Pico](Imagenes/diagramas/08_flujo_main1_pico.png) · [09 · Lazo de alabeo](Imagenes/diagramas/09_lazo_control_alabeo.png) |
+| Todos | [05 · Recorrido de un comando](Imagenes/diagramas/05_recorrido_comando.png) · [10 · Failsafe](Imagenes/diagramas/10_linea_tiempo_failsafe.png) |
+
+<p align="center">
+  <img src="Imagenes/diagramas/08_flujo_main1_pico.png" alt="Flujo de main1.py" width="820">
+</p>
+
+---
+
+## 8. Observaciones y mejoras
+
+Revisión de estos códigos (sin modificarlos) con propuestas para la versión 2: `ROLL_NEUTRO = False` para giros coordinados, amortiguador de cabeceo, armado seguro del motor, telemetría de retorno, medición de latencia de Tailscale y transmisión de vídeo con MediaMTX. Ver [`docs/OBSERVACIONES_Y_MEJORAS.md`](docs/OBSERVACIONES_Y_MEJORAS.md).
+
+---
+
+## 9. Estado del arte
+
+[`Estado_del_arte_UAV_4G_LTE.pdf`](Estado_del_arte_UAV_4G_LTE.pdf) · versión editable [`.docx`](Estado_del_arte_UAV_4G_LTE.docx) · resumen en [`Proyecto/EstadoDelArte`](../../Proyecto/EstadoDelArte/README.md).
+
