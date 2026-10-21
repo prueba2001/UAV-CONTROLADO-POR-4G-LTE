@@ -1,0 +1,379 @@
+<title>Alapalap 4S en 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: visor a pantalla completa con panel lateral de taller (capas, mandos, cotas); en móvil el panel baja debajo del visor */
+:root{
+  --bg:#ECEFEA; --panel:#F8F9F6; --ink:#1D2420; --muted:#5A645D; --line:#D2D8D1;
+  --accent:#C9571F; --accent-soft:#F6E1D5; --stage:#E2E6E0; --grid:#B9C1B9; --grid2:#CDD3CC;
+  --chip:#FFFFFF;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow","Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131715; --panel:#1A1F1C; --ink:#E4E9E4; --muted:#98A39B; --line:#2C342F;
+  --accent:#EE7A40; --accent-soft:#3A2519; --stage:#0F1311; --grid:#2E3732; --grid2:#222924; --chip:#222824; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131715; --panel:#1A1F1C; --ink:#E4E9E4; --muted:#98A39B; --line:#2C342F;
+  --accent:#EE7A40; --accent-soft:#3A2519; --stage:#0F1311; --grid:#2E3732; --grid2:#222924; --chip:#222824; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;gap:12px;box-sizing:border-box}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
+h1{font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:.01em;margin:0;text-wrap:balance}
+.spec{display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.spec b{color:var(--ink);font-weight:500}
+main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;min-height:0}
+.stage{position:relative;background:var(--stage);border:1px solid var(--line);border-radius:6px;overflow:hidden;min-height:0}
+#c{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+#c:active{cursor:grabbing}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lab{position:absolute;transform:translate(-50%,-100%);font-family:var(--f-mono);font-size:11px;white-space:nowrap;color:var(--ink);background:color-mix(in srgb,var(--panel) 85%,transparent);border:1px solid var(--line);padding:1px 6px;border-radius:3px}
+.lab.cg{color:var(--accent);border-color:var(--accent)}
+.views{position:absolute;left:10px;top:10px;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 20px)}
+.views button,.btn{font-family:var(--f-display);font-weight:600;font-size:14px;letter-spacing:.04em;text-transform:uppercase;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:5px 10px;cursor:pointer}
+.views button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.views button:hover,.btn:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pick{position:absolute;left:10px;bottom:10px;right:10px;font-size:13px;color:var(--muted);pointer-events:none}
+.pick b{color:var(--ink);font-family:var(--f-display);font-size:16px;font-weight:600;letter-spacing:.02em}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:auto;min-height:0;padding:14px 16px;display:flex;flex-direction:column;gap:18px}
+section h2{font-family:var(--f-display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.layers{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.layers label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13.5px}
+.sw{width:11px;height:11px;border-radius:2px;border:1px solid rgba(0,0,0,.25);flex:none}
+.ctl{display:grid;grid-template-columns:72px 1fr 52px;align-items:center;gap:8px;margin-bottom:6px}
+.ctl span:last-child{font-family:var(--f-mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.i2c{font-family:var(--f-mono);font-size:12.5px;background:var(--accent-soft);border-radius:4px;padding:7px 9px;margin-top:6px;font-variant-numeric:tabular-nums}
+.i2c small{display:block;font-family:var(--f-body);color:var(--muted);font-size:11.5px;margin-top:3px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:last-child{text-align:right;font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums;padding-left:8px}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+.note li{margin-bottom:3px}
+.note ul{margin:0;padding-left:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.err{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted)}
+@media (max-width:820px){
+  .app{height:auto;display:flex;flex-direction:column}
+  main{grid-template-columns:1fr}
+  .stage{height:62vh;min-height:340px}
+  aside{overflow:visible}
+}
+</style>
+
+<div class="app">
+  <header>
+    <h1>Alapalap 4S · visor 3D</h1>
+    <div class="spec"><span>envergadura <b>1500</b></span><span>largo <b>≈ 776</b></span><span>CG <b>45 mm</b> tras el borde de ataque</span><span>cotas en <b>mm</b></span></div>
+  </header>
+  <main>
+    <div class="stage" id="stage">
+      <canvas id="c" aria-label="Modelo 3D del UAV Alapalap"></canvas>
+      <div class="labels" id="labels"></div>
+      <div class="views" role="group" aria-label="Vistas">
+        <button id="v-iso" aria-pressed="true">3/4</button>
+        <button id="v-top">Arriba</button>
+        <button id="v-bottom">Abajo</button>
+        <button id="v-front">Frente</button>
+        <button id="v-side">Lado</button>
+      </div>
+      <div class="pick" id="pick">Arrastra para girar · rueda o pellizco para zoom · toca una pieza para ver qué es</div>
+    </div>
+    <aside>
+      <section>
+        <h2>Capas</h2>
+        <div class="layers" id="layers"></div>
+        <div class="row" style="margin-top:10px">
+          <label style="display:flex;gap:7px;align-items:center;cursor:pointer"><input type="checkbox" id="xray"> Ala y góndola transparentes</label>
+        </div>
+      </section>
+      <section>
+        <h2>Mandos</h2>
+        <div class="ctl"><label for="roll">Alabeo</label><input id="roll" type="range" min="-25" max="25" value="0"><span id="roll-v">0°</span></div>
+        <div class="ctl"><label for="pitch">Cabeceo</label><input id="pitch" type="range" min="-25" max="25" value="0"><span id="pitch-v">0°</span></div>
+        <div class="ctl"><label for="yaw">Guiñada</label><input id="yaw" type="range" min="-30" max="30" value="0"><span id="yaw-v">0°</span></div>
+        <div class="ctl"><label for="gas">Gas</label><input id="gas" type="range" min="0" max="100" value="0"><span id="gas-v">0 %</span></div>
+        <div class="row"><button class="btn" id="reset">Centrar mandos</button></div>
+        <div class="i2c" id="i2c">[90, 90, 90, 0]<small>Equivale a los 4 bytes [alabeo, cabeceo, guiñada, gas] que tesis.py escribe al Pico (0x08). Ángulos de servo ≈ ángulo de superficie.</small></div>
+      </section>
+      <section>
+        <h2>Medidas</h2>
+        <table>
+          <tr><td>Cuerda en la raíz / punta</td><td>226 / 161,5</td></tr>
+          <tr><td>Superficie alar</td><td>29,1 dm²</td></tr>
+          <tr><td>Alerones (largo × cuerda)</td><td>313 × 50→40</td></tr>
+          <tr><td>Botalones F9, entre centros</td><td>306</td></tr>
+          <tr><td>F9 (largo × alto)</td><td>525,7 × 28,5→13,9</td></tr>
+          <tr><td>Estabilizador S1</td><td>320 × 100</td></tr>
+          <tr><td>Profundidad S3</td><td>316 × 24</td></tr>
+          <tr><td>Hueco servo alerón (centro)</td><td>472,6 / 92,7</td></tr>
+          <tr><td>Centro de gravedad</td><td>45 del BA</td></tr>
+        </table>
+      </section>
+      <section>
+        <h2>Qué es aproximado</h2>
+        <div class="note"><ul>
+          <li>Ala, alerones, botalones, S1, S3 y hueco de servo: medidas del plano A0.</li>
+          <li>Góndola, forma de las derivas S2 y timones S4, hélice de 9": deducidos.</li>
+          <li>Electrónica y servos de cola: distribución orientativa. Mueve la batería hasta que el CG quede en 45 mm.</li>
+          <li>El perfil es el corte de la raíz escalado a cada cuerda; el Depron doblado real varía un poco.</li>
+        </ul></div>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+const stage=document.getElementById('stage'), canvas=document.getElementById('c');
+if(!window.THREE||!THREE.OrbitControls){stage.insertAdjacentHTML('beforeend','<div class="err">No se pudo cargar el motor 3D. Revisa tu conexión y recarga la página.</div>');return;}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// ---------- escena ----------
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(35,1,5,20000);
+const controls=new THREE.OrbitControls(camera,canvas);
+controls.enableDamping=true; controls.dampingFactor=0.08;
+const TARGET=new THREE.Vector3(0,0,215);
+controls.target.copy(TARGET);
+scene.add(new THREE.HemisphereLight(0xffffff,0x8a8f88,0.75));
+const sun=new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(-600,1200,-500); scene.add(sun);
+const fill=new THREE.DirectionalLight(0xffffff,0.3); fill.position.set(700,-300,900); scene.add(fill);
+let grid;
+function applyTheme(){
+  scene.background=new THREE.Color(css('--stage'));
+  if(grid) scene.remove(grid);
+  grid=new THREE.GridHelper(2400,24,new THREE.Color(css('--grid')),new THREE.Color(css('--grid2')));
+  grid.position.set(0,-140,215); scene.add(grid);
+}
+applyTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+// ---------- materiales ----------
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.8,metalness:0,side:THREE.DoubleSide},o));
+const mat={
+  wing:M(0xE8E5DC), surf:M(0x5E9BD6), spar:M(0xE0896A), boom:M(0xC4904F,{roughness:.9}),
+  tail:M(0xE8E5DC), pod:M(0xD3D0C6), bat:M(0x2C6A90), board:M(0x2F7A48), pico:M(0x3FA35F),
+  servo:M(0x3474C4), esc:M(0x34383A), motor:M(0x9AA0A3,{metalness:.6,roughness:.4}), prop:M(0x222426,{roughness:.6}),
+  hole:new THREE.MeshBasicMaterial({color:0x7A2A1E,side:THREE.DoubleSide}), cg:M(0xC9571F,{emissive:0x5a1e05}),
+  modem:M(0xEDEDED), mpu:M(0x6A3FA0)
+};
+const xrayMats=[mat.wing,mat.pod,mat.tail];
+const edgeMat=new THREE.LineBasicMaterial({color:0x2a2f2b,transparent:true,opacity:.35});
+
+const groups={};
+const LAYERS=[
+ ['ala','Ala W1 + W5',0xE8E5DC],['superficies','Alerones y timones',0x5E9BD6],['largueros','Largueros W3 / W4',0xE0896A],
+ ['botalones','Botalones F9',0xC4904F],['cola','Cola S1 / S2',0xD9D6CC],['gondola','Góndola',0xD3D0C6],
+ ['electronica','Electrónica',0x2F7A48],['servos','Servos SG90',0x3474C4],['helice','Motor y hélice',0x222426],
+ ['cg','Centro de gravedad',0xC9571F],['etiquetas','Etiquetas',null]];
+LAYERS.forEach(([k])=>{groups[k]=new THREE.Group();scene.add(groups[k]);});
+const pickables=[];
+function add(g,mesh,name,desc,edges=true){
+  mesh.userData={name,desc}; groups[g].add(mesh); pickables.push(mesh);
+  if(edges){const e=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,25),edgeMat);mesh.add(e);}
+  return mesh;
+}
+
+// ---------- geometría base ----------
+const D2R=Math.PI/180, TD=Math.tan(1.7*D2R);
+const chord=s=>226-64.5*s/750, le=s=>2.24*s/750;
+const PROF=[[226,-5],[21.1,-5],[8.4,-3],[3,0],[0,3.5],[1.5,8.5],[6,13],[14,18.5],[31,24.5],[55,27.2],[83,27.1],[109,24.4],[160,15.2],[206,4.5],[226,0]].map(p=>[p[0]/226,p[1]/226]);
+const kH=s=>1-(50.1+(40-50.1)*(s-437)/313)/chord(s);
+function clip(poly,k,less){const out=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];
+  const ia=less?a[0]<=k+1e-9:a[0]>=k-1e-9, ib=less?b[0]<=k+1e-9:b[0]>=k-1e-9;
+  if(ia) out.push(a); if(ia!==ib){const t=(k-a[0])/(b[0]-a[0]);out.push([k,a[1]+t*(b[1]-a[1])]);}} return out;}
+const W=(side,s,p)=>new THREE.Vector3(side*s,p[1]*chord(s)+s*TD,le(s)+p[0]*chord(s));
+// tubo entre anillos (cada anillo: Vector3 en un plano), tapas planas
+function tube(rings,capAxis='x'){
+  const pos=[],idx=[],n=rings[0].length;
+  rings.forEach(r=>r.forEach(v=>pos.push(v.x,v.y,v.z)));
+  for(let r=0;r<rings.length-1;r++)for(let i=0;i<n;i++){const j=(i+1)%n,a=r*n;idx.push(a+i,a+j,a+n+j,a+i,a+n+j,a+n+i);}
+  [rings[0],rings[rings.length-1]].forEach(ring=>{
+    const off=pos.length/3; ring.forEach(v=>pos.push(v.x,v.y,v.z));
+    const c2=ring.map(v=>capAxis==='x'?new THREE.Vector2(v.z,v.y):new THREE.Vector2(v.x,v.y));
+    THREE.ShapeUtils.triangulateShape(c2,[]).forEach(t=>idx.push(t[0]+off,t[1]+off,t[2]+off));
+  });
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();return g;
+}
+function box(w,h,d,m){return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);}
+// placa extruida de perfil lateral (z,y) con espesor en x
+function plateZY(pts,thick,xc,m){const sh=new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1])));
+  const g=new THREE.ExtrudeGeometry(sh,{depth:thick,bevelEnabled:false});g.rotateY(-Math.PI/2);g.translate(xc+thick/2,0,0);return new THREE.Mesh(g,m);}
+
+// ---------- ala ----------
+const ailerons=[];
+[1,-1].forEach(side=>{
+  const sideTxt=side>0?'derecha':'izquierda';
+  add('ala',new THREE.Mesh(tube([PROF.map(p=>W(side,0,p)),PROF.map(p=>W(side,437,p))]),mat.wing),'Semiala '+sideTxt,'Caras W1 (abajo) y W5 (arriba), Depron 5 mm. Cuerda 226 en la raíz.');
+  const mA=clip(PROF,kH(437),true), mB=clip(PROF,kH(750),true);
+  add('ala',new THREE.Mesh(tube([mA.map(p=>W(side,437,p)),mB.map(p=>W(side,750,p))]),mat.wing),'Semiala '+sideTxt+' (zona del alerón)','Punta de 161,5 mm de cuerda, a 750 mm de la unión central.');
+  const aA=clip(PROF,kH(437),false), aB=clip(PROF,kH(750),false);
+  const yu=(poly)=>poly.filter(p=>Math.abs(p[0]-poly[1][0])<1e-6).reduce((m,p)=>Math.max(m,p[1]),-1);
+  const p0=W(side,437,[kH(437),yu(aA)]), p1=W(side,750,[kH(750),yu(aB)]);
+  const g=tube([aA.map(p=>W(side,437,p)),aB.map(p=>W(side,750,p))]); g.translate(-p0.x,-p0.y,-p0.z);
+  const piv=new THREE.Group(); piv.position.copy(p0); groups.superficies.add(piv);
+  const am=new THREE.Mesh(g,mat.surf); am.userData={name:'Alerón '+sideTxt,desc:'313 mm de largo, cuerda 50 → 40 mm. Lo mueve el SG90 del hueco 40 × 35.'};
+  am.add(new THREE.LineSegments(new THREE.EdgesGeometry(g,25),edgeMat)); piv.add(am); pickables.push(am);
+  ailerons.push({piv,axis:p1.clone().sub(p0).normalize(),side});
+  // largueros
+  const spar=(f,h)=>[0,750].map(s=>{const z=le(s)+f(s),y0=s*TD,hh=h*chord(s)/226;return[[z,y0],[z+5,y0],[z+5,y0+hh],[z,y0+hh]].map(q=>new THREE.Vector3(side*s,q[1],q[0]));});
+  add('largueros',new THREE.Mesh(tube(spar(s=>67.5-24*s/750,22.3)),mat.spar),'Larguero W4','Delantero: a 67,5 mm del borde de ataque en la raíz, 43,5 en la punta.');
+  add('largueros',new THREE.Mesh(tube(spar(s=>150.4-61.4*s/750,12.4)),mat.spar),'Larguero W3','Trasero: a 150,4 mm del borde de ataque en la raíz, 89 en la punta.');
+  // servo de alerón en su hueco
+  const s=472.6, zc=le(s)+92.7, yb=-5*chord(s)/226+s*TD, rot=side*4.87*D2R;
+  const sv=new THREE.Group(); sv.position.set(side*s,yb,zc); sv.rotation.y=rot; groups.servos.add(sv);
+  const body=box(22.7,12.2,23,mat.servo); body.position.set(0,6.1,0); body.userData={name:'Servo SG90 de alerón '+sideTxt,desc:'Acostado en el hueco 40 × 35 de W1: centro a 472,6 mm de la raíz y 92,7 mm del borde de ataque.'};sv.add(body);pickables.push(body);
+  const tab=box(2.5,12.2*0.2,32.2,mat.servo); tab.position.set(-1.5,6.1,0); sv.add(tab);
+  const arm=box(2,14,4,mat.esc); arm.position.set(side*13.5,-2,5.5); sv.add(arm);
+  const hole=new THREE.Mesh(new THREE.PlaneGeometry(40,35),mat.hole); hole.rotation.x=Math.PI/2; hole.position.set(0,-0.4,0);
+  hole.userData={name:'Hueco del servo (W1)',desc:'40 × 35 mm, girado 4,9° paralelo a W3. Centro: 472,6 desde la raíz, 92,7 desde el borde de ataque.'};
+  const hg=new THREE.Group(); hg.position.copy(sv.position); hg.rotation.y=rot; hg.add(hole); groups.ala.add(hg); pickables.push(hole);
+});
+
+// ---------- botalones F9 (contrachapado 4 mm) ----------
+const BT=153*TD-5*chord(153)/226;
+[1,-1].forEach(side=>{
+  const m=plateZY([[53,BT],[578.7,BT],[578.7,BT-13.9],[53,BT-28.5]],4,side*153,mat.boom);
+  add('botalones',m,'Botalón F9 '+(side>0?'derecho':'izquierdo'),'Contrachapado 4 mm, 525,7 mm de largo. Pegado bajo el ala entre 146 y 160 mm de la unión central, desde 53 mm detrás del borde de ataque.');
+});
+
+// ---------- cola ----------
+const S1y=BT;
+const s1=box(320,5,100,mat.tail); s1.position.set(0,S1y+2.5,528.7); add('cola',s1,'Estabilizador S1','320 × 100 mm, sobre el final de los botalones. Su borde de fuga coincide con el final de F9 (578,7 mm del borde de ataque del ala).');
+const elevG=new THREE.BoxGeometry(316,5,24); elevG.translate(0,-2.5,12);
+const elevPiv=new THREE.Group(); elevPiv.position.set(0,S1y+5,578.7); groups.superficies.add(elevPiv);
+const elev=new THREE.Mesh(elevG,mat.surf); elev.userData={name:'Profundidad S3',desc:'316 × 24 mm, articulada en el borde de fuga de S1.'};
+elev.add(new THREE.LineSegments(new THREE.EdgesGeometry(elevG),edgeMat)); elevPiv.add(elev); pickables.push(elev);
+const rudders=[];
+[1,-1].forEach(side=>{
+  const x=side*162.5;
+  const fin=plateZY([[478.7,0],[578.7,0],[578.7,125],[538.7,125]],5,x,mat.tail); fin.position.y=S1y;
+  add('cola',fin,'Deriva S2 '+(side>0?'derecha':'izquierda'),'En la punta de S1. Forma y altura (≈125 mm) deducidas.');
+  const rg=new THREE.BoxGeometry(5,125,25); rg.translate(0,62.5,12.5);
+  const rp=new THREE.Group(); rp.position.set(x,S1y,578.7); groups.superficies.add(rp);
+  const r=new THREE.Mesh(rg,mat.surf); r.userData={name:'Timón S4 '+(side>0?'derecho':'izquierdo'),desc:'Articulado detrás de la deriva. Medidas deducidas.'};
+  r.add(new THREE.LineSegments(new THREE.EdgesGeometry(rg),edgeMat)); rp.add(r); pickables.push(r); rudders.push(rp);
+  const sv=box(12.2,22.7,23,mat.servo); sv.position.set(side*140,S1y+5+11.35,545); sv.userData={name:'Servo SG90 del timón '+(side>0?'derecho':'izquierdo'),desc:'Ubicación orientativa sobre S1, junto a la deriva.'}; groups.servos.add(sv); pickables.push(sv);
+});
+const sve=box(23,22.7,12.2,mat.servo); sve.position.set(0,S1y+5+11.35,555); sve.userData={name:'Servo SG90 de profundidad',desc:'Ubicación orientativa sobre S1, al centro.'}; groups.servos.add(sve); pickables.push(sve);
+
+// ---------- góndola ----------
+function sect(z,w,h,yc,n=28){const r=[];for(let i=0;i<n;i++){const t=i/n*2*Math.PI,c=Math.cos(t),s=Math.sin(t);
+  r.push(new THREE.Vector3(w/2*Math.sign(c)*Math.pow(Math.abs(c),2/3),yc+h/2*Math.sign(s)*Math.pow(Math.abs(s),2/3),z));}return r;}
+const podS=[[-172,6,6,2],[-166,30,28,2],[-152,52,50,2],[-128,68,68,3],[-98,76,78,4],[150,76,80,4],[205,64,62,4],[226,48,44,4]];
+add('gondola',new THREE.Mesh(tube(podS.map(p=>sect(...p)),'z'),mat.pod),'Góndola','Forma deducida: aloja batería, Orange Pi, los dos Pico, módem, ESC y UBEC.',false);
+
+// ---------- electrónica (orientativa) ----------
+const E=(w,h,d,m,x,y,z,name,desc,g='electronica')=>{const b=box(w,h,d,m);b.position.set(x,y,z);add(g,b,name,desc);return b;};
+E(43,33,135,mat.bat,0,-17,-72,'Batería LiPo 4S 3300 mAh 60C','La pieza más pesada: córrela adelante o atrás hasta que el CG quede a 45 mm del borde de ataque.');
+E(56,4,89,mat.board,0,8,55,'Orange Pi 4 Pro','Recibe UDP por Tailscale y escribe los 4 bytes al Pico por I2C (bus 2).');
+E(40,10,40,mat.esc,0,15,55,'Disipador Orange Pi','');
+E(21,3,51,mat.pico,-17,-28,125,'RPi Pico (control)','I2CTarget 0x08: servos GP2–GP6, ESC GP15, MPU6050 en GP10/GP11.');
+E(21,3,51,mat.pico,17,-28,125,'RPi Pico (sensores MQ)','Segundo Pico para los sensores de gases.');
+E(16,2,21,mat.mpu,0,-33,45,'MPU6050','Cerca del CG para medir el alabeo con menos ruido.');
+E(28,10,62,mat.modem,0,24,165,'Módem LTE','Enlace celular para Tailscale.');
+E(25,10,60,mat.esc,-18,-24,180,'ESC','Controla el motor 920 kV desde GP15 del Pico.');
+E(18,8,35,mat.esc,20,-26,185,'UBEC 5 V','Alimentación separada para servos y electrónica, masa común.');
+
+// ---------- motor y hélice ----------
+const mg=new THREE.CylinderGeometry(14,14,30,32); mg.rotateX(Math.PI/2);
+const motor=new THREE.Mesh(mg,mat.motor); motor.position.set(0,4,241); add('helice',motor,'Motor 4S 920 kV','Propulsor detrás de la góndola, en el borde de fuga del ala.',false);
+const prop=new THREE.Group(); prop.position.set(0,4,266); groups.helice.add(prop);
+[0,1].forEach(i=>{const b=box(112,2.5,17,mat.prop); b.position.x=(i?-1:1)*58; b.rotation.x=(i?-1:1)*16*D2R; prop.add(b); b.userData={name:'Hélice propulsora (≈ 9")',desc:'Diámetro supuesto 229 mm; deja ≈ 38 mm libres hasta cada botalón.'}; pickables.push(b);});
+const spin=new THREE.Mesh(new THREE.ConeGeometry(12,26,24).rotateX(Math.PI/2),mat.motor); spin.position.z=10; prop.add(spin);
+const disk=new THREE.Mesh(new THREE.CircleGeometry(114.5,64),new THREE.MeshBasicMaterial({color:0x222426,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+disk.position.set(0,4,266); groups.helice.add(disk);
+
+// ---------- CG ----------
+const cg=new THREE.Mesh(new THREE.SphereGeometry(7,24,16),mat.cg); cg.position.set(0,12,45); add('cg',cg,'Centro de gravedad','A 45 mm del borde de ataque (rango 42–50). Compruébalo con un dedo bajo cada ala en esa línea.',false);
+const cgLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-260,0,45),new THREE.Vector3(260,0,45)].map(v=>{v.y=Math.abs(v.x)*TD+30*chord(260)/226;return v;})),new THREE.LineDashedMaterial({color:0xC9571F,dashSize:10,gapSize:6}));
+cgLine.computeLineDistances(); groups.cg.add(cgLine);
+[1,-1].forEach(side=>{const f=new THREE.Mesh(new THREE.ConeGeometry(9,40,16),mat.cg); f.position.set(side*230,-5*chord(230)/226+230*TD-24,45); groups.cg.add(f);});
+
+// ---------- etiquetas ----------
+const labelsEl=document.getElementById('labels');
+const LBL=[['CG 45 mm',new THREE.Vector3(0,40,45),'cg','cg'],['Alerón',new THREE.Vector3(600,30,le(600)+chord(600)-22),'superficies'],
+ ['Servo alerón',new THREE.Vector3(472.6,-10,le(472.6)+92.7),'servos'],['Botalón F9',new THREE.Vector3(153,BT-30,380),'botalones'],
+ ['S1',new THREE.Vector3(-80,S1y+12,528),'cola'],['Profundidad S3',new THREE.Vector3(70,S1y+14,592),'superficies'],
+ ['Deriva S2',new THREE.Vector3(-162.5,S1y+140,550),'cola'],['Hélice',new THREE.Vector3(0,125,266),'helice'],
+ ['Batería 4S',new THREE.Vector3(0,-40,-72),'electronica'],['W4',new THREE.Vector3(-350,30,le(350)+67.5-11),'largueros'],['W3',new THREE.Vector3(-350,22,le(350)+150.4-28.6),'largueros']]
+ .map(([t,p,g,c])=>{const d=document.createElement('div');d.className='lab'+(c?' '+c:'');d.textContent=t;labelsEl.appendChild(d);return{d,p,g};});
+
+// ---------- capas UI ----------
+const layersEl=document.getElementById('layers');
+LAYERS.forEach(([k,t,col])=>{const id='ly-'+k;const l=document.createElement('label');
+  l.innerHTML=`<input type="checkbox" id="${id}" checked>${col!==null?`<span class="sw" style="background:#${col.toString(16).padStart(6,'0')}"></span>`:''}${t}`;
+  layersEl.appendChild(l);
+  l.querySelector('input').addEventListener('change',e=>{if(k==='etiquetas')labelsEl.hidden=!e.target.checked;else groups[k].visible=e.target.checked;});});
+document.getElementById('xray').addEventListener('change',e=>{xrayMats.forEach(m=>{m.transparent=e.target.checked;m.opacity=e.target.checked?.22:1;m.depthWrite=!e.target.checked;m.needsUpdate=true;});});
+
+// ---------- mandos ----------
+const $=id=>document.getElementById(id);
+const st={roll:0,pitch:0,yaw:0,gas:0};
+function upd(){
+  ['roll','pitch','yaw'].forEach(k=>{st[k]=+$(k).value;$(k+'-v').textContent=(st[k]>0?'+':'')+st[k]+'°';});
+  st.gas=+$('gas').value;$('gas-v').textContent=st.gas+' %';
+  ailerons.forEach(a=>a.piv.quaternion.setFromAxisAngle(a.axis,-st.roll*D2R));
+  elevPiv.rotation.x=-st.pitch*D2R;
+  rudders.forEach(r=>r.rotation.y=st.yaw*D2R);
+  disk.material.opacity=st.gas>0?0.08+st.gas/100*0.17:0;
+  $('i2c').firstChild.nodeValue=`[${90+st.roll}, ${90+st.pitch}, ${90+st.yaw}, ${st.gas}]`;
+}
+['roll','pitch','yaw','gas'].forEach(k=>$(k).addEventListener('input',upd));
+$('reset').addEventListener('click',()=>{['roll','pitch','yaw','gas'].forEach(k=>$(k).value=0);upd();});
+upd();
+
+// ---------- vistas ----------
+const VIEWS={iso:[-1150,620,-1050],top:[0,2100,1],bottom:[0,-2100,1],front:[0,60,-2000],side:[2100,80,0]};
+let anim=null;
+function go(k){
+  document.querySelectorAll('.views button').forEach(b=>b.setAttribute('aria-pressed',b.id==='v-'+k));
+  const to=TARGET.clone().add(new THREE.Vector3(...VIEWS[k]));
+  if(reduce){camera.position.copy(to);controls.target.copy(TARGET);return;}
+  anim={from:camera.position.clone(),tf:controls.target.clone(),to,t0:performance.now()};
+}
+Object.keys(VIEWS).forEach(k=>$('v-'+k).addEventListener('click',()=>go(k)));
+camera.position.copy(TARGET.clone().add(new THREE.Vector3(...VIEWS.iso)));
+
+// ---------- selección ----------
+const ray=new THREE.Raycaster(), mp=new THREE.Vector2(); let down=null;
+canvas.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+canvas.addEventListener('pointerup',e=>{
+  if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;
+  const r=canvas.getBoundingClientRect(); mp.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
+  ray.setFromCamera(mp,camera);
+  const hit=ray.intersectObjects(pickables.filter(o=>{let p=o;while(p){if(!p.visible)return false;p=p.parent;}return true;}),false)[0];
+  const el=$('pick');
+  if(hit&&hit.object.userData.name){el.innerHTML='';const b=document.createElement('b');b.textContent=hit.object.userData.name;el.append(b,document.createElement('br'),hit.object.userData.desc||'');}
+  else el.textContent='Arrastra para girar · rueda o pellizco para zoom · toca una pieza para ver qué es';
+});
+
+// ---------- bucle ----------
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage); resize();
+const tmp=new THREE.Vector3(); let last=performance.now();
+function frame(now){
+  const dt=(now-last)/1000; last=now;
+  if(anim){let t=Math.min(1,(now-anim.t0)/650);t=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    camera.position.lerpVectors(anim.from,anim.to,t);controls.target.lerpVectors(anim.tf,TARGET,t);if(t>=1)anim=null;}
+  if(st.gas>0&&!reduce) prop.rotation.z+=dt*(4+st.gas*0.9);
+  controls.update(); renderer.render(scene,camera);
+  if(!labelsEl.hidden){const w=stage.clientWidth,h=stage.clientHeight;
+    LBL.forEach(L=>{if(!groups[L.g].visible){L.d.hidden=true;return;}tmp.copy(L.p).project(camera);
+      if(tmp.z>1){L.d.hidden=true;return;} L.d.hidden=false; L.d.style.left=((tmp.x+1)/2*w)+'px'; L.d.style.top=((1-tmp.y)/2*h)+'px';});}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
