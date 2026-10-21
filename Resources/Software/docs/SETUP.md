@@ -28,3 +28,9 @@
 * Masa común entre Pico, Orange Pi, ESC y la fuente de los servos.
 * Failsafe del Pico: 500 ms sin I2C → motor a 0, timones al centro, alas niveladas.
 * Retención de la Orange Pi: 1 s repitiendo el último comando si no llega UDP.
+
+## Antes de volar
+* Mide la latencia del enlace desde la laptop: `tailscale ping <IP de Tailscale de la Orange Pi>`. Si responde *via DERP*, el tráfico pasa por un servidor de retransmisión y la latencia será mayor.
+* Prueba el failsafe en tierra (sin hélice): corta la red y comprueba que a los ≈ 1,5 s el motor baja a 0 y las superficies vuelven al centro ([diagrama 10](../Imagenes/diagramas/10_linea_tiempo_failsafe.png)).
+* Diagramas y mejoras propuestas: [`DIAGRAMAS.md`](DIAGRAMAS.md) · [`OBSERVACIONES_Y_MEJORAS.md`](OBSERVACIONES_Y_MEJORAS.md).
+

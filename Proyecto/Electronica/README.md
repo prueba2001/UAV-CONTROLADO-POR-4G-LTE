@@ -78,3 +78,25 @@ El MPU6050 va en su propio bus (I2C1) porque el I2C0 del Pico funciona como escl
 3. Dejar el avión quieto durante 1 s mientras el Pico calibra el giroscopio.
 4. Iniciar `tesis1.py` en la Orange Pi y después `Transmisor1.py` en la laptop.
 5. Comprobar que el mensaje *Enlace con el maestro establecido* aparece antes de dar gas.
+
+---
+
+## 6. Diagramas de Electrónica
+
+Hechos a partir de los códigos definitivos y de este mismo documento. Explicación completa en [`Resources/Software/docs/DIAGRAMAS.md`](../../Resources/Software/docs/DIAGRAMAS.md).
+
+<p align="center">
+  <img src="../../Resources/Software/Imagenes/diagramas/03_conexiones_pico.png" alt="Conexiones del Raspberry Pi Pico" width="820">
+</p>
+
+| Diagrama | Contenido |
+| :--- | :--- |
+| [01 · Arquitectura general](../../Resources/Software/Imagenes/diagramas/01_arquitectura_general.png) | Tierra, red 4G con Tailscale y aviónica a bordo |
+| [02 · Estación terrena](../../Resources/Software/Imagenes/diagramas/02_conexiones_estacion_terrena.png) | Joysticks a A0–A3 del Arduino y USB a la laptop |
+| [03 · Pines del Pico](../../Resources/Software/Imagenes/diagramas/03_conexiones_pico.png) | Los 40 pines, buses I²C, PWM, VSYS y ADC libres (GP26–GP28) |
+| [04 · Distribución de energía](../../Resources/Software/Imagenes/diagramas/04_distribucion_energia.png) | Batería 4S, ESC, UBEC 3 A (servos), UBEC 5 A (electrónica) y masa común |
+| [10 · Failsafe](../../Resources/Software/Imagenes/diagramas/10_linea_tiempo_failsafe.png) | Qué pasa, segundo a segundo, si se corta la red |
+
+> [!WARNING]
+> Los módulos de sensores MQ entregan hasta 5 V por su salida analógica; el ADC del Pico admite como máximo 3,3 V. Usar divisor de tensión o conversor externo antes de GP26–GP28.
+

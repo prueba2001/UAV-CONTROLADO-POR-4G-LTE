@@ -10,6 +10,8 @@
 UAV-CONTROLADO-POR-4G-LTE/
 ├── Proyecto/                              ← Documentos del proyecto
 │   ├── Informe/                           ← Informe técnico aerodinámico (PDF, 38 páginas)
+│   ├── EstadoDelArte/                     ← Resumen del estado del arte (defensa, seguridad y sensores)
+│   ├── Cronograma/                        ← Gantt y cronograma editable en Excel (16 oct – 15 dic 2026)
 │   ├── Electronica/                       ← Alimentación, pines y solución de problemas
 │   └── Mecanica/                          ← Guía de armado: ala, botalones, cola, servos, brochetas, CG
 ├── Resources/
@@ -23,11 +25,17 @@ UAV-CONTROLADO-POR-4G-LTE/
 │       │   └── lector_serial1.py          ← Lectura serial del Arduino
 │       ├── visor3d/alapalap_3d.html       ← Modelo 3D interactivo del avión
 │       ├── Imagenes/                      ← Diagramas y láminas usadas en la documentación
+│       │   ├── diagramas/                 ← 10 diagramas de electrónica y código + Gantt (PNG y SVG)
+│       │   └── estado_del_arte/           ← Figuras del estado del arte
 │       ├── docs/SETUP.md                  ← Puesta en marcha rápida
+│       ├── docs/DIAGRAMAS.md              ← Explicación de cada diagrama
+│       ├── docs/OBSERVACIONES_Y_MEJORAS.md ← Revisión del código, mejoras y transmisión de vídeo
+│       ├── Estado_del_arte_UAV_4G_LTE.pdf ← Documento de estado del arte (21 páginas)
 │       └── README.md
 ├── ArchivosCAD/
 │   ├── DXF/                               ← Piezas listas para la CNC (F9, W6, W1, W5)
 │   └── Planos/                            ← Planos de armado en PDF
+├── avance_cronograma.png                  ← Diagrama de Gantt del proyecto
 └── README.md                              ← Este archivo
 ```
 
@@ -43,6 +51,11 @@ Los drones de ala fija vuelan más lejos y más tiempo que los multirrotores con
 El proyecto parte del **Alapalap**, un entrenador de espuma Depron de 5 mm con cola en H entre dos botalones y motor detrás del ala, diseñado por Julius Perdana. La hélice propulsora deja libre el morro para sensores y la góndola tiene espacio para una computadora de a bordo. Sobre esa base se cambió la planta motriz a 4S, se quitó el tren de aterrizaje (lanzamiento a mano y aterrizaje en panza) y se integró la aviónica: **Orange Pi 4 Pro** como computadora de misión, **RPi Pico** como controlador de vuelo de bajo nivel, **módem LTE** con SIM y un segundo Pico para sensores de gases tipo MQ.
 
 El diseño se evaluó para las condiciones de Chosica (Lima, 850 m s. n. m., 25 °C).
+
+### Estado del arte
+La arquitectura del proyecto (computadora comercial a bordo, controlador de vuelo, módem 4G con SIM y enlace por internet) tiene precedentes directos en sistemas recientes de **defensa y seguridad** de bajo costo: el Molniya-2R (Raspberry Pi 5 + minicomputadora + Starlink), la réplica ucraniana del Molniya (1,5 m de envergadura, igual que este UAV), el SkyRiper Minotaur (mando por 3G/4G con túnel VPN y Raspberry Pi 5), la familia Shahed/Geran (módems 4G con SIM comerciales), el SYPAQ Corvo (placa de espuma encerada y software abierto), el Privet-82 de KB Oko (controlador de vuelo propio) y el ecosistema **Auterion OS / Skynode** (PX4 endurecido). El documento también revisa los sensores de uso común en plataformas Arduino y universitarias (serie MQ, DHT, BME280, SHT, MH-Z19, SCD41, PMS5003) y el marco regulatorio peruano.
+
+Resumen en [`Proyecto/EstadoDelArte/`](Proyecto/EstadoDelArte/README.md) · documento completo en [`Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf`](Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf).
 
 ---
 
@@ -103,6 +116,21 @@ El sistema separa **lo crítico para el vuelo** (RPi Pico: servos, motor, estabi
 | 1 (izquierdo) | Y1 | Gas | Motor (solo la mitad superior da gas) |
 | 2 (derecho) | X2 | Alabeo | 2 alerones (opuestos) |
 | 2 (derecho) | Y2 | Cabeceo | Profundidad S3 |
+
+### 4.1. Diagramas detallados
+
+<p align="center">
+  <img src="Resources/Software/Imagenes/diagramas/01_arquitectura_general.png" alt="Arquitectura general del sistema" width="900">
+</p>
+
+| Electrónica | Código y control |
+| :--- | :--- |
+| [01 · Arquitectura general](Resources/Software/Imagenes/diagramas/01_arquitectura_general.png) | [05 · Recorrido de un comando (ejemplo numérico)](Resources/Software/Imagenes/diagramas/05_recorrido_comando.png) |
+| [02 · Estación terrena](Resources/Software/Imagenes/diagramas/02_conexiones_estacion_terrena.png) | [06 · Flujo del código en tierra](Resources/Software/Imagenes/diagramas/06_flujo_codigo_tierra.png) |
+| [03 · Pines del Raspberry Pi Pico](Resources/Software/Imagenes/diagramas/03_conexiones_pico.png) | [07 · Flujo de `tesis1.py`](Resources/Software/Imagenes/diagramas/07_flujo_tesis1_orangepi.png) · [08 · Flujo de `main1.py`](Resources/Software/Imagenes/diagramas/08_flujo_main1_pico.png) |
+| [04 · Distribución de energía](Resources/Software/Imagenes/diagramas/04_distribucion_energia.png) | [09 · Lazo de alabeo](Resources/Software/Imagenes/diagramas/09_lazo_control_alabeo.png) · [10 · Failsafe](Resources/Software/Imagenes/diagramas/10_linea_tiempo_failsafe.png) |
+
+Explicación de cada uno en [`Resources/Software/docs/DIAGRAMAS.md`](Resources/Software/docs/DIAGRAMAS.md).
 
 ---
 
@@ -213,11 +241,24 @@ La guía de armado completa está en [`Proyecto/Mecanica/README.md`](Proyecto/Me
 - [x] DXF para CNC de F9, W6, W1 y W5
 - [x] Planos de armado: ala, botalones, cola, huecos de servos y brochetas
 - [x] Modelo 3D interactivo
+- [x] Estado del arte: precedentes de defensa y seguridad, Auterion OS y sensores Arduino (21 páginas)
+- [x] Diagramas de electrónica, flujo del código, lazo de control y failsafe
+- [x] Cronograma y diagrama de Gantt (16 oct – 15 dic 2026)
+- [x] Revisión del código y propuestas de mejora ([`OBSERVACIONES_Y_MEJORAS.md`](Resources/Software/docs/OBSERVACIONES_Y_MEJORAS.md))
 - [ ] Construcción completa de la aeronave
 - [ ] Verificación del CG a 45 mm con todo instalado
 - [ ] Primer vuelo con `ROLL_NEUTRO = True`
 - [ ] Sensores de gases MQ en el segundo Pico y envío de telemetría
 - [ ] Receptor RC de respaldo con prioridad sobre el enlace LTE
+- [ ] Trámite de registro ante la DGAC
+- [ ] Telemetría de retorno (batería, inclinación, señal LTE, GPS) y armado seguro del motor
+- [ ] Transmisión de vídeo por Tailscale (MediaMTX) — opcional
+
+<p align="center">
+  <img src="avance_cronograma.png" alt="Diagrama de Gantt" width="900">
+</p>
+
+Plan detallado y Excel editable en [`Proyecto/Cronograma/`](Proyecto/Cronograma/README.md).
 
 ---
 
@@ -229,4 +270,8 @@ La guía de armado completa está en [`Proyecto/Mecanica/README.md`](Proyecto/Me
 * [Electrónica](Proyecto/Electronica/README.md)
 * [Mecánica y armado](Proyecto/Mecanica/README.md)
 * [Archivos CAD y planos](ArchivosCAD/README.md)
+* [Documento de Estado del Arte (PDF)](Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf) · [resumen](Proyecto/EstadoDelArte/README.md)
+* [Diagramas de electrónica y código](Resources/Software/docs/DIAGRAMAS.md)
+* [Cronograma y diagrama de Gantt](Proyecto/Cronograma/README.md) · [Excel](Proyecto/Cronograma/Cronograma_UAV_4G_LTE.xlsx)
+* [Observaciones técnicas y mejoras](Resources/Software/docs/OBSERVACIONES_Y_MEJORAS.md)
 * Diseño original: **Alapalap** de Julius Perdana — [paper-replika.com](https://paper-replika.com). El plano A0 original no se incluye en este repositorio; descárgalo desde su sitio.
