@@ -30,7 +30,7 @@ UAV-CONTROLADO-POR-4G-LTE/
 │       ├── docs/SETUP.md                  ← Puesta en marcha rápida
 │       ├── docs/DIAGRAMAS.md              ← Explicación de cada diagrama
 │       ├── docs/OBSERVACIONES_Y_MEJORAS.md ← Revisión del código, mejoras y transmisión de vídeo
-│       ├── Estado_del_arte_UAV_4G_LTE.pdf ← Documento de estado del arte (19 páginas)
+│       ├── Estado_del_arte_UAV_4G_LTE.pdf ← Documento de estado del arte (21 páginas)
 │       └── README.md
 ├── ArchivosCAD/
 │   ├── DXF/                               ← Piezas listas para la CNC (F9, W6, W1, W5)
@@ -241,7 +241,7 @@ La guía de armado completa está en [`Proyecto/Mecanica/README.md`](Proyecto/Me
 - [x] DXF para CNC de F9, W6, W1 y W5
 - [x] Planos de armado: ala, botalones, cola, huecos de servos y brochetas
 - [x] Modelo 3D interactivo
-- [x] Estado del arte: precedentes de defensa y seguridad, Auterion OS y sensores Arduino (19 páginas)
+- [x] Estado del arte: precedentes de defensa y seguridad, Auterion OS y sensores Arduino (21 páginas)
 - [x] Diagramas de electrónica, flujo del código, lazo de control y failsafe
 - [x] Cronograma y diagrama de Gantt (16 oct – 15 dic 2026)
 - [x] Revisión del código y propuestas de mejora ([`OBSERVACIONES_Y_MEJORAS.md`](Resources/Software/docs/OBSERVACIONES_Y_MEJORAS.md))

@@ -2,7 +2,7 @@
 
 > Revisión de los sistemas recientes de defensa y seguridad que usan la misma arquitectura que este proyecto (computadora comercial a bordo, controlador de vuelo, módem 4G con SIM, enlaces por internet y estructuras baratas), más los sensores de uso común en plataformas Arduino y universitarias.
 
-📄 **Documento completo:** [`Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf`](../../Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf) (19 páginas, 8 figuras, 10 tablas, 47 referencias) · versión editable en [`.docx`](../../Resources/Software/Estado_del_arte_UAV_4G_LTE.docx)
+📄 **Documento completo:** [`Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf`](../../Resources/Software/Estado_del_arte_UAV_4G_LTE.pdf) (21 páginas, 8 figuras, fotos de los sistemas revisados, 10 tablas, 47 referencias) · versión editable en [`.docx`](../../Resources/Software/Estado_del_arte_UAV_4G_LTE.docx)
 
 > [!NOTE]
 > Los casos se describen únicamente por su arquitectura, estructura, componentes y enlaces de comunicación, según fuentes abiertas. Se omiten a propósito los aspectos de armamento y empleo táctico, que no son pertinentes para una plataforma de medición ambiental que opera bajo el marco civil de la DGAC.
