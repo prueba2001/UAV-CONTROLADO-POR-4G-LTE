@@ -91,6 +91,8 @@ El Pico atiende el I2C por hardware con interrupciones, así que recibe órdenes
 
 Página única con three.js: girar, zoom, vistas (3/4, arriba, abajo, frente, lado), capas, modo transparente, mandos que mueven alerones, profundidad, timones y hélice, y los 4 bytes I2C equivalentes. La góndola, las derivas y la electrónica son aproximadas; el ala, los botalones y la cola salen del plano A0.
 
+**[▶ Abrir el visor 3D interactivo en el navegador](https://claude.ai/artifact/1FfqrhXRi7ZsbawRA6YPTv)** — la misma página publicada en línea, sin descargar nada.
+
 ---
 
 ## 6. Puesta en marcha

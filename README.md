@@ -153,6 +153,12 @@ Explicación de cada uno en [`Resources/Software/docs/DIAGRAMAS.md`](Resources/S
 
 Un **modelo 3D interactivo** del avión (ala, botalones, cola, góndola, electrónica, servos, CG y mandos que mueven las superficies) está en [`Resources/Software/visor3d/alapalap_3d.html`](Resources/Software/visor3d/alapalap_3d.html). Descárgalo y ábrelo en el navegador (necesita internet para cargar three.js).
 
+<p align="center">
+  <a href="https://claude.ai/artifact/1FfqrhXRi7ZsbawRA6YPTv"><img src="Resources/Software/Imagenes/vistas.png" alt="Abrir el visor 3D interactivo" width="620"></a>
+</p>
+
+<p align="center"><b><a href="https://claude.ai/artifact/1FfqrhXRi7ZsbawRA6YPTv">▶ Abrir el visor 3D interactivo en el navegador</a></b></p>
+
 ---
 
 ## 6. Protocolo de Comunicación
