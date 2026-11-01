@@ -27,5 +27,17 @@ Capas de `W1_W5.dxf`:
 
 Imprime los planos al 100 % (tamaño real) y comprueba con la regla de 50 mm de cada lámina.
 
+## Modelo 3D en FreeCAD (`FreeCAD/`)
+Ensamble completo del avión generado por script en FreeCAD 1.1 (cotas en mm). Detalles, fuentes de cada medida y piezas deducidas en [`FreeCAD/README.md`](FreeCAD/README.md).
+
+| Archivo | Contenido |
+| :--- | :--- |
+| `alapalap_freecad.py` | Script que genera todas las piezas y el ensamble (fuente de verdad) |
+| `Alapalap_4S.FCStd` | Ensamble FreeCAD con colores y piezas agrupadas (47 sólidos) |
+| `Alapalap_4S.step` | Ensamble para otros CAD |
+| `STL/` | Un STL por pieza |
+
+Regenerar: `freecadcmd alapalap_freecad.py` (solo geometría) o `freecad alapalap_freecad.py` (con colores).
+
 ## Plano original
 Las medidas salen del plano A0 del **Alapalap** de Julius Perdana. Ese plano no se incluye aquí: descárgalo gratis en [paper-replika.com](https://paper-replika.com).
